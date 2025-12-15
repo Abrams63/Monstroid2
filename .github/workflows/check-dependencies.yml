@@ -1,0 +1,37 @@
+name: Check Dependencies Installation
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  check-dependencies:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+
+    - name: Install dependencies from requirements.txt
+      run: |
+        cd backend
+        pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Verify installations
+      run: |
+        cd backend
+        pip list
+        python -c "import fastapi; print(fastapi.__version__)"
+        python -c "import uvicorn; print(uvicorn.__version__)"
+        python -c "import python_multipart; print('python-multipart installed')"
+        python -c "import aiofiles; print(aiofiles.__version__)"
+        python -c "import requests; print(requests.__version__)"
+        python -c "import pydantic; print(pydantic.__version__)"
